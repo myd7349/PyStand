@@ -73,6 +73,8 @@ std::wstring PyStand::Ansi2Unicode(const char *text)
 	MultiByteToWideChar(CP_ACP, 0, text, -1, &wide[0], require);
 	int size = wcslen(wide.c_str());
 	wide.resize(size);
+    MessageBoxA(NULL, text, "Before:", MB_OK);
+    MessageBoxW(NULL, wide.c_str(), L"After:", MB_OK);
 	return wide;
 }
 
@@ -160,7 +162,7 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 	SetEnvironmentVariableW(L"PYSTAND_RUNTIME", _runtime.c_str());
 	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
 
-#if 0
+#if 1
 	wprintf(L"%s - %s\n", _pystand.c_str(), path);
 	MessageBoxW(NULL, _pystand.c_str(), _home.c_str(), MB_OK);
 #endif
@@ -300,10 +302,13 @@ const char *init_script =
 "PYSTAND_SCRIPT = os.environ['PYSTAND_SCRIPT']\n"
 "sys.path_origin = [n for n in sys.path]\n"
 "def MessageBox(msg, info = 'Message'):\n"
+"    print(msg)\n"
 "    import ctypes\n"
 "    ctypes.windll.user32.MessageBoxW(None, str(msg), str(info), 0)\n"
 "    return 0\n"
 "os.MessageBox = MessageBox\n"
+"MessageBox('PYSTAND_RUNTIME: ' + PYSTAND_RUNTIME)\n"
+"MessageBox('PYSTAND_HOME: ' + PYSTAND_HOME)\n"
 "try:\n"
 "    fd = os.open('CONOUT$', os.O_RDWR | os.O_BINARY)\n"
 "    fp = os.fdopen(fd, 'w')\n"
@@ -315,6 +320,8 @@ const char *init_script =
 "    test = os.path.join(PYSTAND_HOME, n)\n"
 "    if os.path.exists(test): sys.path.append(test)\n"
 "sys.path.append(os.path.abspath(PYSTAND_HOME))\n"
+"pathes = '\\n'.join(sys.path)\n"
+"MessageBox('sys.path: ' + pathes)\n"
 "sys.argv = [PYSTAND_SCRIPT] + sys.argv[1:]\n"
 "text = open(PYSTAND_SCRIPT).read()\n"
 "environ = {'__file__': PYSTAND_SCRIPT, '__name__': '__main__'}\n"

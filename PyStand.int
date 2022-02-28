@@ -11,3 +11,12 @@ for path in sys.path:
 
 os.MessageBox(msg)
 
+
+import sys, os
+from PyQt5.QtCore import *
+QTextCodec.setCodecForLocale(QTextCodec.codecForName('UTF-8'))
+import PyQt5.QtCore
+print('Qt5 Plugins path:\n\t%s' % PyQt5.QtCore.QLibraryInfo.location(PyQt5.QtCore.QLibraryInfo.PluginsPath))
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+https://github.com/pyinstaller/pyinstaller/issues/2857
