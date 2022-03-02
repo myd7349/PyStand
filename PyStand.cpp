@@ -158,7 +158,7 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 	SetEnvironmentVariableW(L"PYSTAND", _pystand.c_str());
 	SetEnvironmentVariableW(L"PYSTAND_HOME", _home.c_str());
 	SetEnvironmentVariableW(L"PYSTAND_RUNTIME", _runtime.c_str());
-	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
+	//SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
 
 #if 0
 	wprintf(L"%s - %s\n", _pystand.c_str(), path);
@@ -255,7 +255,7 @@ int PyStand::RunString(const char *script)
 int PyStand::DetectScript()
 {
 	// init: _script (init script like PyStand.int or PyStand.py)
-	int size = (int)_pystand.size();
+	int size = (int)_pystand.size() - 1;
 	for (; size > 0; size--) {
 		if (_pystand[size] == L'.') break;
 	}
@@ -282,7 +282,7 @@ int PyStand::DetectScript()
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return -1;
 	}
-	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
+	BOOL bResult = SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
 	return 0;
 }
 
@@ -299,18 +299,19 @@ const char *init_script =
 "PYSTAND_RUNTIME = os.environ['PYSTAND_RUNTIME']\n"
 "PYSTAND_SCRIPT = os.environ['PYSTAND_SCRIPT']\n"
 "sys.path_origin = [n for n in sys.path]\n"
-"def MessageBox(msg, info = 'Message'):\n"
-"    import ctypes\n"
-"    ctypes.windll.user32.MessageBoxW(None, str(msg), str(info), 0)\n"
-"    return 0\n"
-"os.MessageBox = MessageBox\n"
+"print(sys.path_origin)\n"
+//"def MessageBox(msg, info = 'Message'):\n"
+//"    import ctypes\n"
+//"    ctypes.windll.user32.MessageBoxW(None, str(msg), str(info), 0)\n"
+//"    return 0\n"
+//"os.MessageBox = MessageBox\n"
 "try:\n"
 "    fd = os.open('CONOUT$', os.O_RDWR | os.O_BINARY)\n"
 "    fp = os.fdopen(fd, 'w')\n"
 "    sys.stdout = fp\n"
 "    sys.stderr = fp\n"
 "except Exception as e:\n"
-"    pass\n"
+"    print(e)\n"
 "for n in ['lib', 'site-packages']:\n"
 "    test = os.path.join(PYSTAND_HOME, n)\n"
 "    if os.path.exists(test): sys.path.append(test)\n"
@@ -331,8 +332,12 @@ const char *init_script =
 //! src: 
 //! mode: win
 //! int: objs
+#if 1
 int WINAPI 
 WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int show)
+#else
+int main(void)
+#endif
 {
 	PyStand ps("runtime");
 	if (ps.DetectScript() != 0) {
@@ -343,12 +348,12 @@ WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int show)
 		freopen("CONOUT$", "w", stderr);
 		int fd = _fileno(stdout);
 		if (fd >= 0) {
-			std::string fn = std::to_string(fd);
+			std::string fn = std::to_string(static_cast<long long>(fd));
 			SetEnvironmentVariableA("PYSTAND_STDOUT", fn.c_str());
 		}
 		fd = _fileno(stdin);
 		if (fd >= 0) {
-			std::string fn = std::to_string(fd);
+			std::string fn = std::to_string(static_cast<long long>(fd));
 			SetEnvironmentVariableA("PYSTAND_STDIN", fn.c_str());
 		}
 	}
