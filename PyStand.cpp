@@ -315,6 +315,9 @@ const char *init_script =
 "    fp = os.fdopen(fd, 'w')\n"
 "    sys.stdout = fp\n"
 "    sys.stderr = fp\n"
+"    fd = os.open('CONIN$', os.O_RDWR | os.O_BINARY)\n"
+"    fp = os.fdopen(fd, 'r')\n"
+"    sys.stdin = fp\n"
 "except Exception as e:\n"
 "    pass\n"
 #endif
@@ -358,12 +361,17 @@ WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int show)
 		if (fd >= 0) {
 			std::string fn = std::to_string(fd);
 			SetEnvironmentVariableA("PYSTAND_STDOUT", fn.c_str());
-		}
+		} else {
+            MessageBox(NULL, "Failed to redirect stdout.", "ERROR", MB_OK);
+        }
+        freopen("CONIN$", "r", stdin);
 		fd = _fileno(stdin);
 		if (fd >= 0) {
 			std::string fn = std::to_string(fd);
 			SetEnvironmentVariableA("PYSTAND_STDIN", fn.c_str());
-		}
+		} else {
+            MessageBox(NULL, "Failed to redirect stdin.", "ERROR", MB_OK);
+        }
 	}
 #endif
 	int hr = ps.RunString(init_script);
