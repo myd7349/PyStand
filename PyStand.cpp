@@ -304,6 +304,7 @@ const char *init_script =
 "PYSTAND_HOME = os.environ['PYSTAND_HOME']\n"
 "PYSTAND_RUNTIME = os.environ['PYSTAND_RUNTIME']\n"
 "PYSTAND_SCRIPT = os.environ['PYSTAND_SCRIPT']\n"
+"sys.frozen = True\n"
 "sys.path_origin = [n for n in sys.path]\n"
 "sys.PYSTAND = PYSTAND\n"
 "sys.PYSTAND_HOME = PYSTAND_HOME\n"
