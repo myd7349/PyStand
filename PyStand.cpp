@@ -311,10 +311,6 @@ const char *init_script =
 "sys.PYSTAND = PYSTAND\n"
 "sys.PYSTAND_HOME = PYSTAND_HOME\n"
 "sys.PYSTAND_SCRIPT = PYSTAND_SCRIPT\n"
-"def write_log(log):\n"
-"    with open('PyStand.log', 'w+') as log_file:\n"
-"        log_file.write(log)\n"
-"write_log('Hello, PyStand!\n')\n"
 "def MessageBox(msg, info = 'Message'):\n"
 "    import ctypes\n"
 "    ctypes.windll.user32.MessageBoxW(None, str(msg), str(info), 0)\n"
@@ -327,7 +323,7 @@ const char *init_script =
 "    sys.stdout = fp\n"
 "    sys.stderr = fp\n"
 "except Exception as e:\n"
-"    write_log(e)\n"
+"    MessageBox(e)\n"
 #endif
 "for n in ['.', 'lib', 'site-packages']:\n"
 "    test = os.path.abspath(os.path.join(PYSTAND_HOME, n))\n"
@@ -338,10 +334,14 @@ const char *init_script =
 "code = compile(text, PYSTAND_SCRIPT, 'exec')\n"
 "environ = {'__file__': PYSTAND_SCRIPT, '__name__': '__main__'}\n"
 "environ['__package__'] = None\n"
+#ifndef PYSTAND_CONSOLE
 "try:\n"
 "    exec(code, environ)\n"
 "except Exception as e:\n"
-"    write_log(e)\n"
+"    MessageBox(e)\n"
+#else
+"exec(code, environ)\n"
+#endif
 "";
 
 
