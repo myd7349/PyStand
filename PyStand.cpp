@@ -303,7 +303,6 @@ const char *init_script =
 "import os\n"
 "import copy\n"
 "import site\n"
-"import traceback\n"
 "PYSTAND = os.environ['PYSTAND']\n"
 "PYSTAND_HOME = os.environ['PYSTAND_HOME']\n"
 "PYSTAND_RUNTIME = os.environ['PYSTAND_RUNTIME']\n"
@@ -324,7 +323,7 @@ const char *init_script =
 "    sys.stdout = fp\n"
 "    sys.stderr = fp\n"
 "except Exception as e:\n"
-"    MessageBox(traceback.format_exception(e))\n"
+"    MessageBox('1: ' + str(e))\n"
 #endif
 "for n in ['.', 'lib', 'site-packages']:\n"
 "    test = os.path.abspath(os.path.join(PYSTAND_HOME, n))\n"
@@ -339,7 +338,7 @@ const char *init_script =
 "try:\n"
 "    exec(code, environ)\n"
 "except Exception as e:\n"
-"    MessageBox(traceback.format_exception(e))\n"
+"    MessageBox('2: ' + str(e))\n"
 #else
 "exec(code, environ)\n"
 #endif
