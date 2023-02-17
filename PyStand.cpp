@@ -323,7 +323,7 @@ const char *init_script =
 "    sys.stdout = fp\n"
 "    sys.stderr = fp\n"
 "except Exception as e:\n"
-"    pass\n"
+"    MessageBox(e)\n"
 #endif
 "for n in ['.', 'lib', 'site-packages']:\n"
 "    test = os.path.abspath(os.path.join(PYSTAND_HOME, n))\n"
@@ -334,7 +334,14 @@ const char *init_script =
 "code = compile(text, PYSTAND_SCRIPT, 'exec')\n"
 "environ = {'__file__': PYSTAND_SCRIPT, '__name__': '__main__'}\n"
 "environ['__package__'] = None\n"
+#ifndef PYSTAND_CONSOLE
+"try:\n"
+"    exec(code, environ)\n"
+"except Exception as e:\n"
+"    MessageBox(e)\n"
+#else
 "exec(code, environ)\n"
+#endif
 "";
 
 
