@@ -1,13 +1,34 @@
 #  vim: set ts=4 sw=4 tw=0 et ft=python :
-import os
-import sys
+import sys, os
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 
-msg = 'Hello from %s'%(os.path.abspath(__file__))
-print(msg)
-print()
+sys.stdout.write('Hello, stdout!\n')
+print('Hello, world!')
 
-for path in sys.path:
-    print('>', path)
+app = QApplication([])
 
-os.MessageBox(msg)
+win = QWidget()
+win.setWindowTitle('PyStand')
+
+layout = QVBoxLayout()
+
+label = QLabel('Hello, World !!')
+label.setAlignment(Qt.AlignCenter)
+layout.addWidget(label)
+
+btn = QPushButton(text = 'PUSH ME')
+layout.addWidget(btn)
+
+win.setLayout(layout)
+win.resize(400, 300)
+
+btn.clicked.connect(lambda : [
+        print('exit'),
+        win.close(),
+    ])
+
+win.show()
+
+app.exec_()
 

@@ -334,14 +334,10 @@ const char *init_script =
 "code = compile(text, PYSTAND_SCRIPT, 'exec')\n"
 "environ = {'__file__': PYSTAND_SCRIPT, '__name__': '__main__'}\n"
 "environ['__package__'] = None\n"
-#ifndef PYSTAND_CONSOLE
 "try:\n"
 "    exec(code, environ)\n"
 "except Exception as e:\n"
 "    MessageBox(e)\n"
-#else
-"exec(code, environ)\n"
-#endif
 "";
 
 
@@ -368,9 +364,12 @@ WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int show)
 		return 3;
 	}
 #ifndef PYSTAND_CONSOLE
+	printf("1: %d\n", (int)GetStdHandle(STD_OUTPUT_HANDLE));
 	if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+		printf("2: %d\n", (int)GetStdHandle(STD_OUTPUT_HANDLE));
 		freopen("CONOUT$", "w", stdout);
 		freopen("CONOUT$", "w", stderr);
+		printf("3: %d\n", (int)GetStdHandle(STD_OUTPUT_HANDLE));
 		int fd = _fileno(stdout);
 		if (fd >= 0) {
 			std::string fn = std::to_string(fd);
