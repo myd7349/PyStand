@@ -28,12 +28,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Configure PyStand(GUI)
+    - name: Configure PyStand (GUI)
       if: ${{ matrix.subsystem == 'GUI' }}
       run: |
         cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=OFF
 
-    - name: Configure PyStand(CLI)
+    - name: Configure PyStand (CLI)
       if: ${{ matrix.subsystem == 'CLI' }}
       run: |
         cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=ON
@@ -56,6 +56,9 @@ jobs:
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v2
+
+    - name: Display structure of downloaded files
+      run: ls -R
 
     - name: Release
       uses: softprops/action-gh-release@v1
