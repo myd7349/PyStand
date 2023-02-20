@@ -68,4 +68,7 @@ jobs:
       with:
         generate_release_notes: true
         files: |
-          build/*
+          PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI/*
+          PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI/*
+          PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI/*
+          PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI/*
