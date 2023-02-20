@@ -64,4 +64,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         files: |
-          PyStand-${{ env.PYSTAND_VERSION }}*
+          PyStand*.zip
