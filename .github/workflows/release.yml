@@ -3,7 +3,7 @@ name: PyStand
 on: [push, pull_request]
 
 env:
-  PYSTAND_VERSION: 1.0.6
+  PYSTAND_VERSION: v1.0.6
 
 jobs:
   build:
@@ -15,10 +15,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {generator: Visual Studio 17 2022, arch: Win32, console: OFF, subsystem: GUI}
-          - {generator: Visual Studio 17 2022, arch: Win32, console: ON, subsystem: CLI}
-          - {generator: Visual Studio 17 2022, arch: x64, console: OFF, subsystem: GUI}
-          - {generator: Visual Studio 17 2022, arch: x64, console: ON, subsystem: CLI}
+          - {generator: Visual Studio 17 2022, arch: Win32, subsystem: GUI, console: OFF}
+          - {generator: Visual Studio 17 2022, arch: Win32, subsystem: CLI, console: ON}
+          - {generator: Visual Studio 17 2022, arch: x64, subsystem: GUI, console: OFF}
+          - {generator: Visual Studio 17 2022, arch: x64, subsystem: CLI, console: ON}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -41,25 +41,11 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         path: artifacts
-
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ needs.setup.outputs.VERSION }}
-        release_name: Release ${{ needs.setup.outputs.VERSION }}
-        draft: false
-        prerelease: false
-
-    - name: Upload PyStand ${{ env.PYSTAND_VERSION }} Win32 GUI
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        ASSET_NAME: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.arch }}-${{ matrix.subsystem }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: artifacts/${{ env.ASSET_NAME }}/${{ env.PACKAGENAME }}.zip
-        asset_name: ${{ env.ASSET_NAME }}.zip
-        asset_content_type: application/zip
+        files: |
+          artifacts/PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI/PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI.zip
+          artifacts/PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI/PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI.zip
+          artifacts/PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI/PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI.zip
+          artifacts/PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI/PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI.zip
