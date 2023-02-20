@@ -64,7 +64,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         files: |
-          PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI.zip
-          PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI.zip
-          PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI.zip
-          PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI.zip
+          PyStand-${{ env.PYSTAND_VERSION }}*
