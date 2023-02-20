@@ -4,43 +4,61 @@ on: [push, pull_request]
 
 env:
   PYSTAND_VERSION: v1.0.6
+  GENERATOR: Visual Studio 17 2022
+  BUILD_TYPE: Release
 
 jobs:
   build:
     if: >-
       ! contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
       ! contains(toJSON(github.event.commits.*.message), '[skip github]')
+
     runs-on: windows-latest
+
     strategy:
       fail-fast: false
       matrix:
         include:
-          - {generator: Visual Studio 17 2022, arch: Win32, subsystem: GUI, console: OFF}
-          - {generator: Visual Studio 17 2022, arch: Win32, subsystem: CLI, console: ON}
-          - {generator: Visual Studio 17 2022, arch: x64, subsystem: GUI, console: OFF}
-          - {generator: Visual Studio 17 2022, arch: x64, subsystem: CLI, console: ON}
+          - { arch: Win32, subsystem: GUI }
+          - { arch: Win32, subsystem: CLI }
+          - { arch: x64, subsystem: GUI }
+          - { arch: x64, subsystem: CLI }
+
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Configure
+
+    - name: Configure PyStand(GUI version)
+      if: ${{matrix.subsystem == 'GUI'}}
       run: |
-        cmake -G "${{ matrix.generator }}" -A ${{ matrix.arch }} -DPYSTAND_CONSOLE=${{ matrix.console }} -B build-${{ matrix.arch }}-${{ matrix.subsystem }}
+        cmake -G "${{env.GENERATOR}}" -A ${{matrix.arch}} -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPYSTAND_CONSOLE=OFF
+
+    - name: Configure PyStand(Console version)
+      if: ${{matrix.subsystem == 'CLI'}}
+      run: |
+        cmake -G "${{env.GENERATOR}}" -A ${{matrix.arch}} -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPYSTAND_CONSOLE=ON
+
     - name: Build
-      run: cmake --build build-${{ matrix.arch }}-${{ matrix.subsystem }} --config Release 
+      run: |
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.arch }}-${{ matrix.subsystem }}
-        path: build-${{ matrix.arch }}-${{ matrix.subsystem }}/Release
+        name: PyStand-${{env.PYSTAND_VERSION}}-${{matrix.arch}}-${{matrix.subsystem}}
+        path: build/Release
 
   release:
     needs: [build]
+
     runs-on: windows-latest
+
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v2
       with:
         path: artifacts
+
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
