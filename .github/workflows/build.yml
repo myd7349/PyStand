@@ -1,6 +1,6 @@
 name: PyStand
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 env:
   PYSTAND_VERSION: v1.0.6
@@ -28,40 +28,40 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Configure PyStand(GUI version)
-      if: ${{matrix.subsystem == 'GUI'}}
+    - name: Configure PyStand(GUI)
+      if: ${{ matrix.subsystem == 'GUI' }}
       run: |
-        cmake -G "${{env.GENERATOR}}" -A ${{matrix.arch}} -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPYSTAND_CONSOLE=OFF
+        cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=OFF
 
-    - name: Configure PyStand(Console version)
-      if: ${{matrix.subsystem == 'CLI'}}
+    - name: Configure PyStand(CLI)
+      if: ${{ matrix.subsystem == 'CLI' }}
       run: |
-        cmake -G "${{env.GENERATOR}}" -A ${{matrix.arch}} -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPYSTAND_CONSOLE=ON
+        cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=ON
 
     - name: Build
       run: |
-        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        cmake --build ${{ github.workspace }}/build --config ${{ env.BUILD_TYPE }}
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: PyStand-${{env.PYSTAND_VERSION}}-${{matrix.arch}}-${{matrix.subsystem}}
+        name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.arch }}-${{ matrix.subsystem }}
         path: build/Release
 
   release:
-    needs: [build]
+    needs: [ build ]
 
     runs-on: windows-latest
 
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v2
-      with:
-        path: artifacts
 
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         files: |
           PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI.zip
