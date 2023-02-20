@@ -1,0 +1,27 @@
+name: VS2022-CI
+
+on: [push, pull_request]
+
+jobs:
+  ci:
+    if: >-
+      ! contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
+      ! contains(toJSON(github.event.commits.*.message), '[skip github]')
+    name: windows-vs2022
+    runs-on: windows-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - {gen: Visual Studio 17 2022, arch: Win32, console: ON}
+          - {gen: Visual Studio 17 2022, arch: Win32, console: OFF}
+          - {gen: Visual Studio 17 2022, arch: x64, console: ON}
+          - {gen: Visual Studio 17 2022, arch: x64, console: OFF}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Configure
+      run: |
+        cmake -G "${{matrix.gen}}" -A ${{matrix.arch}} -DPYSTAND_CONSOLE=${{matrix.shared}} -B build
+    - name: Build Release
+      run: cmake --build build --config Release
