@@ -1,0 +1,78 @@
+name: PyStand
+
+on: [ push, pull_request ]
+
+env:
+  PYSTAND_VERSION: v1.0.6
+  GENERATOR: Visual Studio 17 2022
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    if: >-
+      ! contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
+      ! contains(toJSON(github.event.commits.*.message), '[skip github]')
+
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { arch: Win32, subsystem: GUI }
+          - { arch: Win32, subsystem: CLI }
+          - { arch: x64, subsystem: GUI }
+          - { arch: x64, subsystem: CLI }
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PyStand (GUI)
+      if: ${{ matrix.subsystem == 'GUI' }}
+      run: |
+        cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=OFF
+
+    - name: Configure PyStand (CLI)
+      if: ${{ matrix.subsystem == 'CLI' }}
+      run: |
+        cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=ON
+
+    - name: Build
+      run: |
+        cmake --build ${{ github.workspace }}/build --config ${{ env.BUILD_TYPE }}
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.arch }}-${{ matrix.subsystem }}
+        path: build/Release
+
+  release:
+    needs: [ build ]
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+
+    - name: List downloaded files
+      run: ls -R
+
+    - name: Create archives
+      run: |
+        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI.zip PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI/*
+        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI.zip PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI/*
+        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-x64-CLI.zip PyStand-${{ env.PYSTAND_VERSION }}-x64-CLI/*
+        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI.zip PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI/*
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        generate_release_notes: true
+        files: |
+          PyStand*.zip
