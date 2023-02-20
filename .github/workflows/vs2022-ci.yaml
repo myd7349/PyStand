@@ -1,4 +1,4 @@
-name: VS2022-CI
+name: PyStand
 
 on: [push, pull_request]
 
@@ -7,21 +7,25 @@ jobs:
     if: >-
       ! contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
       ! contains(toJSON(github.event.commits.*.message), '[skip github]')
-    name: windows-vs2022
     runs-on: windows-latest
     strategy:
       fail-fast: true
       matrix:
         include:
-          - {gen: Visual Studio 17 2022, arch: Win32, console: ON}
-          - {gen: Visual Studio 17 2022, arch: Win32, console: OFF}
-          - {gen: Visual Studio 17 2022, arch: x64, console: ON}
-          - {gen: Visual Studio 17 2022, arch: x64, console: OFF}
+          - {gen: Visual Studio 17 2022, arch: Win32, console: OFF, subsystem: GUI}
+          - {gen: Visual Studio 17 2022, arch: Win32, console: ON, subsystem: CLI}
+          - {gen: Visual Studio 17 2022, arch: x64, console: OFF, subsystem: GUI}
+          - {gen: Visual Studio 17 2022, arch: x64, console: ON, subsystem: CLI}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Configure
       run: |
         cmake -G "${{matrix.gen}}" -A ${{matrix.arch}} -DPYSTAND_CONSOLE=${{matrix.shared}} -B build
-    - name: Build Release
-      run: cmake --build build --config Release
+    - name: Build
+      run: cmake --build build --config Release 
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: PyStand-VS2022-${{matrix.arch}}-${{matrix.subsystem}}
+        path: build/Release
