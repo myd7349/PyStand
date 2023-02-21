@@ -67,9 +67,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Setup VS2010
-      run: choco install vcexpress2010
-
     - name: Configure
       run: |
         if ( '${{ matrix.subsystem }}' -eq 'GUI' )
