@@ -73,7 +73,6 @@ jobs:
         pacboy: >-
           toolchain:p
           cmake:p
-          ninja:p
 
     - name: Checkout
       uses: actions/checkout@v3
