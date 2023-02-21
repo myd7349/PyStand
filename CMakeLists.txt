@@ -4,6 +4,8 @@ project (PyStand LANGUAGES CXX RC)
 
 option(PYSTAND_CONSOLE "Build PyStand as a console application." OFF)
 
+message(STATUS "PYSTAND_CONSOLE=${PYSTAND_CONSOLE}")
+
 # sources
 set(sources
 	PyStand.cpp

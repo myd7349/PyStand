@@ -27,16 +27,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Configure PyStand
+    - name: Configure
       run: |
         if ( '${{ matrix.subsystem }}' -eq 'GUI' )
         {
-          Write-Host 'PYSTAND_CONSOLE=OFF'
           cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=OFF
         }
         else
         {
-          Write-Host 'PYSTAND_CONSOLE=ON'
           cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=ON
         }
 
