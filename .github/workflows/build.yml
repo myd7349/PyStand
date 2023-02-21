@@ -80,6 +80,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Configure
+      shell: bash
       run: |
         PYSTAND_CONSOLE="OFF"
         if [ "${{matrix.subsystem}}" == "CLI" ]; then
