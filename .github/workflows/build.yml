@@ -61,17 +61,20 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - { sys: MINGW32, subsystem: GUI }
-          - { sys: MINGW32, subsystem: CLI }
-          - { sys: MINGW64, subsystem: GUI }
-          - { sys: MINGW64, subsystem: CLI }
+          - { sys: MINGW32, platform: i686, subsystem: GUI }
+          - { sys: MINGW32, platform: i686, subsystem: CLI }
+          - { sys: MINGW64, platform: x86_64, subsystem: GUI }
+          - { sys: MINGW64, platform: x86_64, subsystem: CLI }
 
     steps:
     - name: Setup MSYS2
       uses: msys2/setup-msys2@v2
       with:
         msystem: ${{ matrix.sys }}
-        install: cmake
+        install: >-
+          base-devel
+          cmake
+          mingw-w64-${{ matrix.platform }}-toolchain
 
     - name: Checkout
       uses: actions/checkout@v3
