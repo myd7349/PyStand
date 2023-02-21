@@ -53,30 +53,31 @@ jobs:
 
     runs-on: windows-latest
 
+    defaults:
+      run:
+        shell: msys2 {0}
+
     strategy:
       fail-fast: true
       matrix:
         include:
-          - { sys: mingw32, subsystem: GUI }
-          - { sys: mingw32, subsystem: CLI }
-          - { sys: mingw64, subsystem: GUI }
-          - { sys: mingw64, subsystem: CLI }
+          - { sys: MINGW32, subsystem: GUI }
+          - { sys: MINGW32, subsystem: CLI }
+          - { sys: MINGW64, subsystem: GUI }
+          - { sys: MINGW64, subsystem: CLI }
 
     steps:
     - name: Setup MSYS2
       uses: msys2/setup-msys2@v2
       with:
-        release: false
         msystem: ${{ matrix.sys }}
 
     - name: Checkout
       uses: actions/checkout@v3
 
     - name: Configure
-      shell: bash
       run: |
-        msystem_name=${{ matrix.sys }}
-        export MSYSTEM="${msystem_name^^}"
+        export MSYSTEM="${{ matrix.sys }}"
         echo "MSYSTEM=$MSYSTEM"
         PYSTAND_CONSOLE="OFF"
         if [ "${{ matrix.subsystem }}" == "CLI" ]; then
