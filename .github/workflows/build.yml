@@ -10,8 +10,7 @@ env:
 jobs:
   build:
     if: >-
-      ! contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
-      ! contains(toJSON(github.event.commits.*.message), '[skip github]')
+      ! contains(toJSON(github.event.commits.*.message), '[skip ci]')
 
     runs-on: windows-latest
 
@@ -28,15 +27,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Configure PyStand (GUI)
-      if: ${{ matrix.subsystem == 'GUI' }}
+    - name: Configure PyStand
       run: |
-        cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=OFF
-
-    - name: Configure PyStand (CLI)
-      if: ${{ matrix.subsystem == 'CLI' }}
-      run: |
-        cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=ON
+        if ( ${{ matrix.subsystem }} -eq 'GUI' )
+        {
+          cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=OFF
+        }
+        else
+        {
+          cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=ON
+        }
 
     - name: Build
       run: |
