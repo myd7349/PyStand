@@ -4,11 +4,10 @@ on: [ push, pull_request ]
 
 env:
   PYSTAND_VERSION: v1.0.6
-  GENERATOR: Visual Studio 17 2022
   BUILD_TYPE: Release
 
 jobs:
-  vs2022:
+  msvc:
     if: >-
       ! contains(toJSON(github.event.commits.*.message), '[skip ci]')
 
@@ -18,10 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { arch: Win32, subsystem: GUI }
-          - { arch: Win32, subsystem: CLI }
-          - { arch: x64, subsystem: GUI }
-          - { arch: x64, subsystem: CLI }
+          - { generator: Visual Studio 17 2022, arch: Win32, subsystem: GUI }
+          - { generator: Visual Studio 17 2022, arch: Win32, subsystem: CLI }
+          - { generator: Visual Studio 17 2022, arch: x64, subsystem: GUI }
+          - { generator: Visual Studio 17 2022, arch: x64, subsystem: CLI }
 
     steps:
     - name: Checkout
@@ -31,11 +30,11 @@ jobs:
       run: |
         if ( '${{ matrix.subsystem }}' -eq 'GUI' )
         {
-          cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B build -DPYSTAND_CONSOLE=OFF
+          cmake -G "${{ matrix.generator }}" -A ${{ matrix.arch }} -B build -DPYSTAND_CONSOLE=OFF
         }
         else
         {
-          cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B build -DPYSTAND_CONSOLE=ON
+          cmake -G "${{ matrix.generator }}" -A ${{ matrix.arch }} -B build -DPYSTAND_CONSOLE=ON
         }
 
     - name: Build
@@ -48,7 +47,7 @@ jobs:
         name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.arch }}-${{ matrix.subsystem }}
         path: build/${{ env.BUILD_TYPE }}
 
-  msys2:
+  gcc:
     if: >-
       ! contains(toJSON(github.event.commits.*.message), '[skip ci]')
 
@@ -96,10 +95,10 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.sys }}-${{ matrix.subsystem }}
-        path: build/${{ env.BUILD_TYPE }}
+        path: build/PyStand.exe
 
   release:
-    needs: [ vs2022 ]
+    needs: [ msvc, gcc ]
 
     runs-on: windows-latest
 
