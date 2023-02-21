@@ -31,22 +31,22 @@ jobs:
       run: |
         if ( '${{ matrix.subsystem }}' -eq 'GUI' )
         {
-          cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=OFF
+          cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B build -DPYSTAND_CONSOLE=OFF
         }
         else
         {
-          cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B ${{ github.workspace }}/build -DPYSTAND_CONSOLE=ON
+          cmake -G "${{ env.GENERATOR }}" -A ${{ matrix.arch }} -B build -DPYSTAND_CONSOLE=ON
         }
 
     - name: Build
       run: |
-        cmake --build ${{ github.workspace }}/build --config ${{ env.BUILD_TYPE }}
+        cmake --build build --config ${{ env.BUILD_TYPE }}
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
         name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.arch }}-${{ matrix.subsystem }}
-        path: build/Release
+        path: build/${{ env.BUILD_TYPE }}
 
   release:
     needs: [ build ]
@@ -62,10 +62,10 @@ jobs:
 
     - name: Create archives
       run: |
-        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI.zip PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI/*
-        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI.zip PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI/*
-        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-x64-CLI.zip PyStand-${{ env.PYSTAND_VERSION }}-x64-CLI/*
-        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI.zip PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI/*
+        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI.zip PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI\*
+        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI.zip PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI\*
+        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-x64-CLI.zip PyStand-${{ env.PYSTAND_VERSION }}-x64-CLI\*
+        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI.zip PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI\*
 
     - name: Release
       uses: softprops/action-gh-release@v1
