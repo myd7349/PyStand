@@ -84,7 +84,7 @@ jobs:
         if [ "${{ matrix.subsystem }}" == "CLI" ]; then
           PYSTAND_CONSOLE="ON"
         fi      
-        cmake -B build -DPYSTAND_CONSOLE=$PYSTAND_CONSOLE -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        cmake -G "MinGW Makefiles" -B build -DPYSTAND_CONSOLE=$PYSTAND_CONSOLE -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
     - name: Build
       run: |
