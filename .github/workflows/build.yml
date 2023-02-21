@@ -7,7 +7,7 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  msvc:
+  build-msvc:
     if: >-
       ! contains(toJSON(github.event.commits.*.message), '[skip ci]')
 
@@ -47,7 +47,7 @@ jobs:
         name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.arch }}-${{ matrix.subsystem }}
         path: build/${{ env.BUILD_TYPE }}
 
-  gcc:
+  build-gcc:
     if: >-
       ! contains(toJSON(github.event.commits.*.message), '[skip ci]')
 
@@ -75,6 +75,8 @@ jobs:
     - name: Configure
       shell: bash
       run: |
+        export MSYSTEM="${${{ matrix.subsystem }}^^}"
+        echo "MSYSTEM=$MSYSTEM"
         PYSTAND_CONSOLE="OFF"
         if [ "${{ matrix.subsystem }}" == "CLI" ]; then
           PYSTAND_CONSOLE="ON"
@@ -92,7 +94,7 @@ jobs:
         path: build/PyStand.exe
 
   release:
-    needs: [ msvc, gcc ]
+    needs: [ build-msvc, build-gcc ]
 
     runs-on: windows-latest
 
