@@ -55,7 +55,7 @@ jobs:
     runs-on: windows-latest
 
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - { sys: mingw32, subsystem: GUI }
@@ -86,7 +86,7 @@ jobs:
         if [ "${{matrix.subsystem}}" == "CLI" ]; then
           PYSTAND_CONSOLE="ON"
         fi
-        cmake -B build -DPYSTAND_CONSOLE=$PYSTAND_CONSOLE -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        cmake -G "MinGW Makefiles" -B build -DPYSTAND_CONSOLE=$PYSTAND_CONSOLE -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
     - name: Build
       run: |
@@ -95,7 +95,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.arch }}-${{ matrix.subsystem }}
+        name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.sys }}-${{ matrix.subsystem }}
         path: build/${{ env.BUILD_TYPE }}
 
   release:
