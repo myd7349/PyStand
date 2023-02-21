@@ -55,17 +55,17 @@ jobs:
 
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
 
     - name: List downloaded files
       run: ls -R
 
     - name: Create archives
       run: |
-        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI.zip PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI\*
-        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI.zip PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI\*
-        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-x64-CLI.zip PyStand-${{ env.PYSTAND_VERSION }}-x64-CLI\*
-        7z a -r PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI.zip PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI\*
+        7z a PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI.zip .\PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI\*
+        7z a PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI.zip .\PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI\*
+        7z a PyStand-${{ env.PYSTAND_VERSION }}-x64-CLI.zip .\PyStand-${{ env.PYSTAND_VERSION }}-x64-CLI\*
+        7z a PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI.zip .\PyStand-${{ env.PYSTAND_VERSION }}-x64-GUI\*
 
     - name: Release
       uses: softprops/action-gh-release@v1
