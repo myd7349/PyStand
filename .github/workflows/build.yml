@@ -8,7 +8,7 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  build:
+  vs2022:
     if: >-
       ! contains(toJSON(github.event.commits.*.message), '[skip ci]')
 
@@ -48,8 +48,51 @@ jobs:
         name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.arch }}-${{ matrix.subsystem }}
         path: build/${{ env.BUILD_TYPE }}
 
+  vs2010:
+    if: >-
+      ! contains(toJSON(github.event.commits.*.message), '[skip ci]')
+
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { generator: Visual Studio 10 2010, subsystem: GUI }
+          - { generator: Visual Studio 10 2010, subsystem: CLI }
+          - { generator: Visual Studio 10 2010 Win64, subsystem: GUI }
+          - { generator: Visual Studio 10 2010 Win64, subsystem: CLI }
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup VS2010
+      run: choco install vsexpress2010
+
+    - name: Configure
+      run: |
+        if ( '${{ matrix.subsystem }}' -eq 'GUI' )
+        {
+          cmake -G "${{ matrix.generator }}" -B build -DPYSTAND_CONSOLE=OFF
+        }
+        else
+        {
+          cmake -G "${{ matrix.generator }}" -B build -DPYSTAND_CONSOLE=ON
+        }
+
+    - name: Build
+      run: |
+        cmake --build build --config ${{ env.BUILD_TYPE }}
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.arch }}-${{ matrix.subsystem }}-VS2010
+        path: build/${{ env.BUILD_TYPE }}
+
   release:
-    needs: [ build ]
+    needs: [ vs2022, vs2010 ]
 
     runs-on: windows-latest
 
