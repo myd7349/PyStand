@@ -77,12 +77,15 @@ jobs:
         "${{ github.workspace }}\${{ matrix.sys }}\bin" >> $env:GITHUB_PATH
         echo $env:GITHUB_PATH
         echo $env:PATH
+        tree
 
     - name: Checkout
       uses: actions/checkout@v3
 
     - name: Configure
       run: |
+        echo $env:GITHUB_PATH
+        echo $env:PATH
         if ( '${{ matrix.subsystem }}' -eq 'GUI' )
         {
           cmake -G "MinGW Makefiles" -B build -DPYSTAND_CONSOLE=OFF -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
