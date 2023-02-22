@@ -51,7 +51,7 @@ jobs:
     if: >-
       ! contains(toJSON(github.event.commits.*.message), '[skip ci]')
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     defaults:
       run:
