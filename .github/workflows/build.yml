@@ -29,10 +29,11 @@ jobs:
 
     - name: Configure
       run: >
-        cmake -G "${{ matrix.generator }}"
-              -A ${{ matrix.arch }}
-              -B build
-              ${{ matrix.subsystem == 'GUI' && '-DPYSTAND_CONSOLE=OFF' || '-DPYSTAND_CONSOLE=ON' }}
+        cmake
+        -G "${{ matrix.generator }}"
+        -A ${{ matrix.arch }}
+        -B build
+        ${{ matrix.subsystem == 'GUI' && '-DPYSTAND_CONSOLE=OFF' || '-DPYSTAND_CONSOLE=ON' }}
 
     - name: Build
       run: |
@@ -79,10 +80,11 @@ jobs:
 
     - name: Configure
       run: >
-        cmake -G "MinGW Makefiles"
-              -B build
-              -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
-              ${{ matrix.subsystem == 'GUI' && '-DPYSTAND_CONSOLE=OFF' || '-DPYSTAND_CONSOLE=ON' }}
+        cmake
+        -G "MinGW Makefiles"
+        -B build
+        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        ${{ matrix.subsystem == 'GUI' && '-DPYSTAND_CONSOLE=OFF' || '-DPYSTAND_CONSOLE=ON' }}
 
     - name: Build
       run: |
