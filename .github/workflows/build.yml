@@ -61,16 +61,16 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - { sys: MINGW32, arch: i686, subsystem: GUI }
-          - { sys: MINGW32, arch: i686, subsystem: CLI }
-          - { sys: MINGW64, arch: x86_64, subsystem: GUI }
-          - { sys: MINGW64, arch: x86_64, subsystem: CLI }
+          - { msystem: MINGW32, arch: i686, subsystem: GUI }
+          - { msystem: MINGW32, arch: i686, subsystem: CLI }
+          - { msystem: MINGW64, arch: x86_64, subsystem: GUI }
+          - { msystem: MINGW64, arch: x86_64, subsystem: CLI }
 
     steps:
     - name: Setup MSYS2
       uses: msys2/setup-msys2@v2
       with:
-        msystem: ${{ matrix.sys }}
+        msystem: ${{ matrix.msystem }}
         install: >-
           base-devel
           cmake
@@ -81,13 +81,13 @@ jobs:
 
     - name: Configure
       run: |
-        export MSYSTEM="${{ matrix.sys }}"
+        export MSYSTEM="${{ matrix.msystem }}"
         echo "MSYSTEM=$MSYSTEM"
         PYSTAND_CONSOLE="OFF"
         if [ "${{ matrix.subsystem }}" == "CLI" ]; then
           PYSTAND_CONSOLE="ON"
         fi      
-        cmake -B build -DPYSTAND_CONSOLE=$PYSTAND_CONSOLE -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_TOOLCHAIN_FILE=./cmake/${{ matrix.sys }}.cmake
+        cmake -B build -DPYSTAND_CONSOLE=$PYSTAND_CONSOLE -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_TOOLCHAIN_FILE=./cmake/mingw-w64-${{ matrix.arch }}.cmake
 
     - name: Build
       run: |
@@ -96,7 +96,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.sys }}-${{ matrix.subsystem }}
+        name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.msystem }}-${{ matrix.subsystem }}
         path: build/PyStand.exe
 
   release:
