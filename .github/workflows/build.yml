@@ -9,7 +9,8 @@ env:
 jobs:
   build-msvc:
     if: >-
-      ! contains(toJSON(github.event.commits.*.message), '[skip ci]')
+      ! contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
+      github.event.pull_request.draft == false
 
     runs-on: windows-latest
 
@@ -49,12 +50,13 @@ jobs:
 
   build-gcc:
     if: >-
-      ! contains(toJSON(github.event.commits.*.message), '[skip ci]')
+      ! contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
+      github.event.pull_request.draft == false
 
     runs-on: windows-latest
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         include:
           - { sys: mingw32, arch: i686, subsystem: GUI }
@@ -66,9 +68,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Download MinGW-w64
+    - name: Setup MinGW-w64
       run: |
-        pwd
         if ( '${{ matrix.arch }}' -eq 'i686' )
         {
           Invoke-WebRequest -Uri https://github.com/brechtsanders/winlibs_mingw/releases/download/7.5.0-7.0.0-r1/winlibs-i686-posix-dwarf-gcc-7.5.0-mingw-w64-7.0.0-r1.7z -OutFile ${{ matrix.sys }}.7z
@@ -79,15 +80,9 @@ jobs:
         }
         7z x ${{ matrix.sys }}.7z
         "${{ github.workspace }}\${{ matrix.sys }}\bin" >> $env:GITHUB_PATH
-        echo $env:GITHUB_PATH
-        echo $env:PATH
-        tree
 
     - name: Configure
       run: |
-        pwd
-        echo $env:GITHUB_PATH
-        echo $env:PATH
         if ( '${{ matrix.subsystem }}' -eq 'GUI' )
         {
           cmake -G "MinGW Makefiles" -B build -DPYSTAND_CONSOLE=OFF -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
