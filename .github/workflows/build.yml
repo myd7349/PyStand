@@ -53,41 +53,42 @@ jobs:
 
     runs-on: windows-latest
 
-    defaults:
-      run:
-        shell: msys2 {0}
-
     strategy:
       fail-fast: true
       matrix:
         include:
-          - { msystem: MINGW32, arch: i686, subsystem: GUI }
-          - { msystem: MINGW32, arch: i686, subsystem: CLI }
-          - { msystem: MINGW64, arch: x86_64, subsystem: GUI }
-          - { msystem: MINGW64, arch: x86_64, subsystem: CLI }
+          - { sys: mingw32, arch: i686, subsystem: GUI }
+          - { sys: mingw32, arch: i686, subsystem: CLI }
+          - { sys: mingw64, arch: x86_64, subsystem: GUI }
+          - { sys: mingw64, arch: x86_64, subsystem: CLI }
 
     steps:
-    - name: Setup MSYS2
-      uses: msys2/setup-msys2@v2
-      with:
-        msystem: ${{ matrix.msystem }}
-        install: >-
-          base-devel
-          cmake
-          mingw-w64-${{ matrix.arch }}-toolchain
+    - name: Setup MinGW-w64
+      run: |
+        if ( '${{ matrix.arch }}' -eq 'i686' )
+        {
+          Invoke-WebRequest -Uri https://github.com/brechtsanders/winlibs_mingw/releases/download/7.5.0-7.0.0-r1/winlibs-i686-posix-dwarf-gcc-7.5.0-mingw-w64-7.0.0-r1.7z -OutFile ${{ matrix.sys }}.7z
+        }
+        else
+        {
+          Invoke-WebRequest -Uri https://github.com/brechtsanders/winlibs_mingw/releases/download/7.5.0-7.0.0-r1/winlibs-x86_64-posix-seh-gcc-7.5.0-mingw-w64-7.0.0-r1.7z -OutFile ${{ matrix.sys }}.7z
+        }
+        7z x ${{ matrix.sys }}.7z
+        $Env:Path="${{ matrix.sys }}\bin;$Env:Path"
 
     - name: Checkout
       uses: actions/checkout@v3
 
     - name: Configure
       run: |
-        echo $MSYSTEM
-        echo $MSYSTEM_PREFIX
-        PYSTAND_CONSOLE="OFF"
-        if [ "${{ matrix.subsystem }}" == "CLI" ]; then
-          PYSTAND_CONSOLE="ON"
-        fi      
-        cmake -B build -DPYSTAND_CONSOLE=$PYSTAND_CONSOLE -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_TOOLCHAIN_FILE=./cmake/mingw-w64-${{ matrix.arch }}.cmake
+        if ( '${{ matrix.subsystem }}' -eq 'GUI' )
+        {
+          cmake -G "MinGW Makefiles" -B build -DPYSTAND_CONSOLE=OFF -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        }
+        else
+        {
+          cmake -G "MinGW Makefiles" -B build -DPYSTAND_CONSOLE=ON -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        }
 
     - name: Build
       run: |
@@ -96,8 +97,8 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.msystem }}-${{ matrix.subsystem }}
-        path: build/PyStand.exe
+        name: PyStand-${{ env.PYSTAND_VERSION }}-${{ matrix.sys }}-${{ matrix.subsystem }}
+        path: build\PyStand.exe
 
   release:
     needs: [ build-msvc, build-gcc ]
