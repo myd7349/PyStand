@@ -77,7 +77,6 @@ jobs:
         "${{ github.workspace }}\${{ matrix.sys }}\bin" >> $env:GITHUB_PATH
         echo $env:GITHUB_PATH
         echo $env:PATH
-        "${{ github.workspace }}\${{ matrix.sys }}\bin\gcc.exe" --version
 
     - name: Checkout
       uses: actions/checkout@v3
