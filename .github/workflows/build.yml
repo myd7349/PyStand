@@ -51,7 +51,7 @@ jobs:
     if: >-
       ! contains(toJSON(github.event.commits.*.message), '[skip ci]')
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     defaults:
       run:
@@ -81,8 +81,8 @@ jobs:
 
     - name: Configure
       run: |
-        export MSYSTEM="${{ matrix.msystem }}"
-        echo "MSYSTEM=$MSYSTEM"
+        echo $MSYSTEM
+        echo $MSYSTEM_PREFIX
         PYSTAND_CONSOLE="OFF"
         if [ "${{ matrix.subsystem }}" == "CLI" ]; then
           PYSTAND_CONSOLE="ON"
