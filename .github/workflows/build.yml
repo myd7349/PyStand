@@ -63,8 +63,12 @@ jobs:
           - { sys: mingw64, arch: x86_64, subsystem: CLI }
 
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
     - name: Download MinGW-w64
       run: |
+        pwd
         if ( '${{ matrix.arch }}' -eq 'i686' )
         {
           Invoke-WebRequest -Uri https://github.com/brechtsanders/winlibs_mingw/releases/download/7.5.0-7.0.0-r1/winlibs-i686-posix-dwarf-gcc-7.5.0-mingw-w64-7.0.0-r1.7z -OutFile ${{ matrix.sys }}.7z
@@ -79,11 +83,9 @@ jobs:
         echo $env:PATH
         tree
 
-    - name: Checkout
-      uses: actions/checkout@v3
-
     - name: Configure
       run: |
+        pwd
         echo $env:GITHUB_PATH
         echo $env:PATH
         if ( '${{ matrix.subsystem }}' -eq 'GUI' )
