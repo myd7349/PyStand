@@ -56,10 +56,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { sys: mingw32, arch: i686, subsystem: GUI }
-          - { sys: mingw32, arch: i686, subsystem: CLI }
-          - { sys: mingw64, arch: x86_64, subsystem: GUI }
-          - { sys: mingw64, arch: x86_64, subsystem: CLI }
+          - { sys: mingw32, subsystem: GUI }
+          - { sys: mingw32, subsystem: CLI }
+          - { sys: mingw64, subsystem: GUI }
+          - { sys: mingw64, subsystem: CLI }
 
     steps:
     - name: Checkout
@@ -67,7 +67,7 @@ jobs:
 
     - name: Setup MinGW-w64
       run: |
-        if ( '${{ matrix.arch }}' -eq 'i686' )
+        if ( '${{ matrix.sys }}' -eq 'mingw32' )
         {
           Invoke-WebRequest -Uri https://github.com/brechtsanders/winlibs_mingw/releases/download/7.5.0-7.0.0-r1/winlibs-i686-posix-dwarf-gcc-7.5.0-mingw-w64-7.0.0-r1.7z -OutFile ${{ matrix.sys }}.7z
         }
