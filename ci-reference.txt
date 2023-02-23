@@ -1,0 +1,162 @@
+name: CMake
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure CMake
+      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      # Execute tests defined by the CMake configuration.
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: ctest -C ${{env.BUILD_TYPE}}
+
+
+https://github.com/skx/github-action-publish-binaries
+
+https://github.com/softprops/action-gh-release
+
+https://github.com/Super-member/openwrt/blob/main/.github/workflows/build-openwrt.yml
+
+https://github.com/softprops/action-gh-release/issues/324
+
+https://github.com/microsoft/setup-msbuild/issues/78
+
+https://stackoverflow.com/questions/60916931/github-action-does-the-if-have-an-else
+
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules?view=powershell-7.3
+
+simdjson
+
+opencv-mobile
+
+yyjson
+
+clipboard
+
+https://github.com/actions/runner/issues/894
+
+https://superuser.com/questions/340046/creating-an-archive-from-a-directory-without-the-directory-name-being-added-to-t
+
+https://github.com/actions/runner-images/issues/1858
+
+https://allenkuo.medium.com/visual-studio-2019-2017-works-with-win-sdk-7-1-7a41443e425b
+
+https://github.com/allenk/WinSDK71_VisualStudio2019
+
+https://www.msys2.org/docs/ci/
+
+https://www.msys2.org/docs/windows_support/
+
+https://github.com/msys2/setup-msys2/blob/main/examples/cmake.yml
+
+https://stackoverflow.com/questions/5805874/the-proper-way-of-forcing-a-32-bit-compile-using-cmake
+
+https://www.geeksforgeeks.org/compile-32-bit-program-64-bit-gcc-c-c/
+
+https://stackoverflow.com/questions/44284275/passing-compiler-options-in-cmake
+
+https://docs.epics-controls.org/projects/how-tos/en/latest/getting-started/installation-windows-msys2.html
+
+https://www.msys2.org/docs/environments/
+
+https://www.msys2.org/docs/ci/
+
+https://askubuntu.com/questions/58814/how-do-i-add-environment-variables
+
+https://stackoverflow.com/questions/19690504/how-do-i-compile-and-link-a-32-bit-windows-executable-using-mingw-w64
+
+https://stackoverflow.com/questions/11392189/how-can-i-convert-a-string-from-uppercase-to-lowercase-in-bash
+
+https://gist.github.com/Hamayama/eb4b4824ada3ac71beee0c9bb5fa546d
+
+https://stackoverflow.com/questions/30069830/how-can-i-install-mingw-w64-and-msys2
+
+https://stackoverflow.com/questions/72152658/cmake-error-no-cmake-rc-compiler-could-be-found
+
+https://gitlab.kitware.com/cmake/cmake/-/issues/20500
+
+set(CMAKE_SYSTEM_NAME Windows)
+set(CMAKE_SYSTEM_VERSION 10.0)
+set(CMAKE_C_COMPILER   x86_64-w64-mingw32-gcc)
+set(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
+set(CMAKE_RC_COMPILER  x86_64-w64-mingw32-windres)
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+https://stackoverflow.com/questions/49508242/how-to-compile-resource-file-with-mingw-windres
+
+https://github.com/msys2/MSYS2-packages/issues/937
+
+https://github.com/godotengine/godot/issues/40286
+
+https://ariya.io/2020/07/on-github-actions-with-msys2
+
+https://gist.github.com/scivision/1de4fd6abea9ba6b2d87dc1e86b5d2ce
+
+https://stackoverflow.com/questions/65818460/cmake-using-github-actions-msys2
+
+https://github.com/FauxFaux/PuTTYTray/blob/master/mingw-w64-x86_64.cmake
+
+https://github.com/mstorsjo/llvm-mingw/issues/20
+
+https://stackoverflow.com/questions/68211182/how-to-set-system-path-variable-in-github-action-workflow
+
+https://stackoverflow.com/questions/68211182/how-to-set-system-path-variable-in-github-action-workflow
+
+https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
+
+https://stackoverflow.com/questions/60169752/how-to-update-the-path-in-a-github-action-workflow-file-for-a-windows-latest-hos
+
+https://stackoverflow.com/questions/69250165/github-action-windows-runner-how-to-remove-all-sh-exe-from-path
+
+https://stackoverflow.com/questions/63606079/how-to-use-clang-10-or-gcc-10-when-building-via-github-actions
+
+https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
+
+https://github.com/winlibs/libxml2/actions/runs/845174582/jobs/822171540
+
+https://github.com/winlibs/libxml2/actions/runs/845174582/workflow
+
+https://github.com/actions/toolkit/issues/655
+
+https://github.com/marketplace/actions/install-gcc
+
+https://github.com/orgs/community/discussions/26380
+
+https://www.scivision.dev/github-actions-path-append/
+
+https://github.com/actions/runner-images#software-and-image-support
+
+https://stackoverflow.com/questions/3455625/linux-command-to-print-directory-structure-in-the-form-of-a-tree
+
+f3d
+
+https://learnxinyminutes.com/docs/yaml/
+
+https://github.com/orgs/community/discussions/25286
