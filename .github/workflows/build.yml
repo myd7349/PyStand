@@ -3,7 +3,7 @@ name: PyStand
 on: [ push, pull_request ]
 
 env:
-  PYSTAND_VERSION: v1.0.6
+  PYSTAND_VERSION: v1.0.7
   BUILD_TYPE: Release
 
 jobs:
