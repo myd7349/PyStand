@@ -101,16 +101,17 @@ jobs:
 
     needs: [ build-msvc, build-gcc ]
 
-    if: startsWith(github.ref, 'refs/tags/')
-
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v3
+      if: startsWith(github.ref, 'refs/tags/')
 
     - name: List downloaded files
+      if: startsWith(github.ref, 'refs/tags/')
       run: ls -R
 
     - name: Create archives
+      if: startsWith(github.ref, 'refs/tags/')
       run: |
         7z a PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI.zip .\PyStand-${{ env.PYSTAND_VERSION }}-Win32-CLI\*
         7z a PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI.zip .\PyStand-${{ env.PYSTAND_VERSION }}-Win32-GUI\*
@@ -123,6 +124,7 @@ jobs:
 
     - name: Release
       uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
