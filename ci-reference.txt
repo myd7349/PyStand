@@ -168,3 +168,5 @@ https://stackoverflow.com/questions/65844033/conditional-needs-in-github-action
 https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 https://stackoverflow.com/questions/58177786/get-the-current-pushed-tag-in-github-actions
+
+https://github.com/orgs/community/discussions/25722
