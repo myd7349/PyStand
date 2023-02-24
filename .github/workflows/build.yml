@@ -113,7 +113,7 @@ jobs:
       run: >
         7z
         a
-        PyStand-${{  github.ref_name }}-exe.zip
+        PyStand-${{ github.ref_name }}-exe.zip
         PyStand-Win32-CLI
         PyStand-Win32-GUI
         PyStand-x64-CLI
