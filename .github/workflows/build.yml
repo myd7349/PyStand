@@ -1,11 +1,9 @@
 name: PyStand
 
 on:
+  push:
   pull_request:
     types: [ opened, synchronize, reopened, ready_for_review ]
-  push:
-    branches:
-      - master
 
 env:
   BUILD_TYPE: Release
