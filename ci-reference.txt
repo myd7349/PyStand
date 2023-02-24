@@ -178,3 +178,5 @@ https://developers.home-assistant.io/docs/documenting/yaml-style-guide/
 https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
 
 https://superuser.com/questions/900911/how-to-7zip-multiple-folders-in-to-one-7z-package
+
+https://docs.github.com/en/actions/managing-workflow-runs/skipping-workflow-runs
