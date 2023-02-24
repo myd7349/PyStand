@@ -1,6 +1,9 @@
 name: PyStand
 
-on: [ push, pull_request ]
+on:
+  push:
+  pull_request:
+    types: [ opened, reopened, ready_for_review ]
 
 env:
   PYSTAND_VERSION: v1.0.7
