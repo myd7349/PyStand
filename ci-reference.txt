@@ -172,3 +172,5 @@ https://stackoverflow.com/questions/58177786/get-the-current-pushed-tag-in-githu
 https://github.com/orgs/community/discussions/25722
 
 https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull-request-event-pull_request
+
+https://developers.home-assistant.io/docs/documenting/yaml-style-guide/
