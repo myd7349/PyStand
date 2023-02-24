@@ -1,9 +1,11 @@
 name: PyStand
 
 on:
-  push:
   pull_request:
-    types: [ opened, reopened, ready_for_review ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
+  push:
+    branches:
+      - master
 
 env:
   BUILD_TYPE: Release
@@ -19,11 +21,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        arch: [ Win32, x64 ]
+        subsystem: [ GUI, CLI ]
         include:
-          - { generator: Visual Studio 17 2022, arch: Win32, subsystem: GUI }
-          - { generator: Visual Studio 17 2022, arch: Win32, subsystem: CLI }
-          - { generator: Visual Studio 17 2022, arch: x64, subsystem: GUI }
-          - { generator: Visual Studio 17 2022, arch: x64, subsystem: CLI }
+          - generator: Visual Studio 17 2022
 
     steps:
     - name: Checkout
