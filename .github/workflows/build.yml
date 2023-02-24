@@ -56,14 +56,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        msys: [ mingw32, mingw64 ]
+        sys: [ mingw32, mingw64 ]
         subsystem: [ GUI, CLI ]
 
     steps:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Setup MinGW-w64
+    - name: Setup WinLibs
       run: |
         if ( '${{ matrix.sys }}' -eq 'mingw32' )
         {
