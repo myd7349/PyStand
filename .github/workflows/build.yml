@@ -11,7 +11,6 @@ env:
 jobs:
   build-msvc:
     if: >-
-      ! contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
       github.event.pull_request.draft == false
 
     runs-on: windows-latest
@@ -48,7 +47,6 @@ jobs:
 
   build-gcc:
     if: >-
-      ! contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
       github.event.pull_request.draft == false
 
     runs-on: windows-latest
