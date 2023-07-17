@@ -358,6 +358,8 @@ const char *init_script =
 "try:\n"
 "    code = compile(text, PYSTAND_SCRIPT, 'exec')\n"
 "    exec(code, environ)\n"
+"except SystemExit:\n"
+"    pass\n"
 "except:\n"
 "    import traceback, io\n"
 "    sio = io.StringIO()\n"
