@@ -11,15 +11,15 @@ on:
 env:
   BUILD_TYPE: Release
 
+permissions:
+  contents: read
+
 jobs:
   build-msvc:
     if: >-
       github.event.pull_request.draft == false
 
     runs-on: windows-2022
-
-    permissions:
-      contents: read
 
     strategy:
       fail-fast: false
